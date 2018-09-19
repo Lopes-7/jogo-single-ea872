@@ -25,17 +25,20 @@ class ListaDePosicoes{
     std::vector<Posicao*> *get_posicoes();
     void adicionar_posicao(Posicao *p);
     void remover_posicao(Posicao *p);
+    void hard_copy(ListaDePosicoes *ldp);
 };
 
 class Jogador{
   private:
     char simbolo;
     Posicao *posicao_atual;
+    Posicao *posicao_antiga;
 
   public:
-    Jogador(char simbolo, Posicao *posicao_atual);
-    void andar(int direcao);
+    Jogador(char simbolo, Posicao *posicao_atual, Posicao *posicao_antiga);
+    void andar(int direcao, FILE* log);
     Posicao* get_posicao_atual();
+    Posicao* get_posicao_antiga();
     char get_simbolo();
 };
 class ListaDeJogadores{

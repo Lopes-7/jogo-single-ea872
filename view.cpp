@@ -20,9 +20,13 @@ void Tela::init() {
 }
 
 void Tela::update() {
+  int linhaMax, colunaMax;
+  getmaxyx(stdscr, linhaMax, colunaMax);
   int a = this->m->get_altura();
   int l = this->m->get_largura();
   int i,k;
+  
+  //fazer de forma mais eficiente
   for (i = 0; i < l; i++){
     for(k = 0; k < a; k++){
       if(i == 0 || i == l-1){
@@ -35,18 +39,17 @@ void Tela::update() {
       }
     }
   }
-
-  //pegar todas as posicoes iniciais e escreve-las na tela
-  /*std::vector<Posicao*> *vetor = this->m->get_posicoes_iniciais();
+  //pegar todas as posicoes antigas dos jogadores e apaga-los
+  std::vector<Jogador*> *vetor = this->m->get_jogadores();
   for (i = 0; i < vetor->size();i++){
-    int x = (*vetor)[i]->get_x();
-    int y = (*vetor)[i]->get_y();
+    int x = (*vetor)[i]->get_posicao_antiga()->get_x();
+    int y = (*vetor)[i]->get_posicao_antiga()->get_y();
     move(x,y);
-    echochar('I');
-  }*/
+    echochar(' ');
+  }
 
   //pegar todas as posicoes atuais dos jogadores desenha-los
-  std::vector<Jogador*> *vetor = this->m->get_jogadores();
+
   for (i = 0; i < vetor->size();i++){
     int x = (*vetor)[i]->get_posicao_atual()->get_x();
     int y = (*vetor)[i]->get_posicao_atual()->get_y();

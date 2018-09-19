@@ -35,46 +35,85 @@ void ListaDePosicoes::adicionar_posicao(Posicao *p){
 void ListaDePosicoes::remover_posicao(Posicao *p){
 //TO DO
 }
+void ListaDePosicoes::hard_copy(ListaDePosicoes *ldp) {
+  std::vector<Posicao *> *posicoes = ldp->get_posicoes();
 
+  for (int k=0; k<posicoes->size(); k++) {
+    Posicao *p = new Posicao((*posicoes)[k]->get_x(),\
+                          (*posicoes)[k]->get_y());
+    this->adicionar_posicao(p);
+  }
+}
 
-Jogador::Jogador(char simbolo, Posicao *posicao_atual) {
+Jogador::Jogador(char simbolo, Posicao *posicao_atual, Posicao *posicao_antiga) {
 	this->simbolo = simbolo;
 	this->posicao_atual = posicao_atual;
+	this->posicao_antiga = posicao_antiga;
 
 }
-void Jogador::andar(int direcao){
-	int v;
+
+void Jogador::andar(int direcao, FILE *log){	
+	int x, y;
 	if (direcao == 0){
 		//anda para frente;
-		v = this->posicao_atual->get_y();
-		v++;
-		this->posicao_atual->set_y(v);
+		//copia posicao atual em antiga
+		x = this->posicao_atual->get_x();
+		y = this->posicao_atual->get_y();
+		this->posicao_antiga->set_x(x);
+		this->posicao_antiga->set_y(y);
+		
+		//atualiza posicao atual
+		y++;
+		this->posicao_atual->set_y(y);
 	}
 	else if (direcao == 1){
 		//anda para tras;
-		v = this->posicao_atual->get_y();
-		v--;
-		this->posicao_atual->set_y(v);	
+		//copia posicao atual em antiga
+		x = this->posicao_atual->get_x();
+		y = this->posicao_atual->get_y();
+		this->posicao_antiga->set_x(x);
+		this->posicao_antiga->set_y(y);
+		
+		//atualiza posicao atual
+		y--;
+		this->posicao_atual->set_y(y);	
 	}
 	else if (direcao == 2){
 		//anda para direita;
-		v = this->posicao_atual->get_x();
-		v++;
-		this->posicao_atual->set_x(v);	
+		//copia posicao atual em antiga
+		x = this->posicao_atual->get_x();
+		y = this->posicao_atual->get_y();
+		this->posicao_antiga->set_x(x);
+		this->posicao_antiga->set_y(y);
+
+		//atualiza posicao atual
+		x++;
+		this->posicao_atual->set_x(x);	
 	}
 	else if (direcao == 3){
 		//anda para esquerda;
-		v = this->posicao_atual->get_x();
-		v--;
-		this->posicao_atual->set_x(v);
+		//copia posicao atual em antiga
+		x = this->posicao_atual->get_x();
+		y = this->posicao_atual->get_y();
+		this->posicao_antiga->set_x(x);
+		this->posicao_antiga->set_y(y);
+
+		//atualiza posicao atual
+		x--;
+		this->posicao_atual->set_x(x);
 	}
 	else {
 		return;
 	}
+	fprintf(log ,"At: x:%d y:%d\n", this->posicao_atual->get_x(),this->posicao_atual->get_y());
+	fprintf(log ,"An: x:%d y:%d\n", this->posicao_antiga->get_x(),this->posicao_antiga->get_y());
 	
 }
 Posicao* Jogador::get_posicao_atual(){
 	return this->posicao_atual;
+}
+Posicao* Jogador::get_posicao_antiga(){
+	return this->posicao_antiga;
 }
 char Jogador::get_simbolo(){
 	return this->simbolo;
