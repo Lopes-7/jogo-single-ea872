@@ -67,7 +67,7 @@ void Jogador::andar(int direcao, FILE *log){
 		this->posicao_atual->set_y(y);
 	}
 	else if (direcao == 1){
-		//anda para tras;
+		//anda para baixo;
 		//copia posicao atual em antiga
 		x = this->posicao_atual->get_x();
 		y = this->posicao_atual->get_y();
@@ -118,6 +118,10 @@ Posicao* Jogador::get_posicao_antiga(){
 char Jogador::get_simbolo(){
 	return this->simbolo;
 }
+Posicao* Jogador::set_posicao_atual(int x, int y){
+	this->get_posicao_atual()->set_x(x);
+	this->get_posicao_atual()->set_y(y);
+}
 
 ListaDeJogadores::ListaDeJogadores(){
 	this->jogadores = new std::vector<Jogador *>(0);
@@ -133,12 +137,13 @@ void ListaDeJogadores::remover_jogador(Jogador *j){
 }
 
 
-Mapa::Mapa(int altura, int largura, ListaDePosicoes *iniciais, ListaDePosicoes *objetivo, ListaDeJogadores *jogadores){
+Mapa::Mapa(int altura, int largura, ListaDePosicoes *iniciais, ListaDePosicoes *objetivo, ListaDeJogadores *jogadores, ListaDeJogadores *obstaculos){
 	this->altura = altura;
 	this->largura = largura;
 	this->posicoes_iniciais = iniciais;
 	this->posicoes_objetivo = objetivo;
 	this->jogadores = jogadores;
+	this->obstaculos = obstaculos;
 }
 int Mapa::get_altura(){
 	return this->altura;
@@ -154,4 +159,51 @@ std::vector<Posicao*> *Mapa::get_posicoes_objetivo() {
 }
 std::vector<Jogador*> *Mapa::get_jogadores() {
   return (this->jogadores->get_jogadores());
+}
+std::vector<Jogador*> *Mapa::get_obstaculos() {
+  return (this->obstaculos->get_jogadores());
+}
+//retorna 0 se nao houve colisao, 1 se houve colisao com obstaculo, 2 se houve colisao e morte, 3 parametro invalido 
+int Mapa::verificar_colisao(Jogador *j, int direcao){
+	int intencao, i;
+	
+//ARRUMAR ESSA PARTE
+	/*std::vector<Jogador*> *obstaculos = this->get_obstaculos();
+	for (i = 0; i < obstaculos->size();i++){
+    	int x = (int) (*obstaculos)[i]->get_posicao_atual()->get_x();
+    	int y = (int) (*obstaculos)[i]->get_posicao_atual()->get_y();
+    	if (x == j->get_posicao_atual()->get_x() && y == j->get_posicao_atual()->get_y()){
+    		return 2;
+    	}
+	}*/
+	if (direcao == 0){
+		intencao = j->get_posicao_atual()->get_y() + 1;
+		if (intencao == get_largura()){
+			return 1;
+		}
+	}
+	else if (direcao == 1){
+		intencao = j->get_posicao_atual()->get_y() - 1;
+		if (intencao == 0){
+			return 1;
+		}
+	}
+	//verifica se o jogador quiser andar para baixo
+	else if (direcao == 2){
+		intencao = j->get_posicao_atual()->get_x() + 1;
+		if (intencao == get_altura()){
+			return 1;
+		}
+	}
+	//verifica se o jogador quiser andar para cima
+	else if (direcao == 3){
+		intencao = j->get_posicao_atual()->get_x() - 1;
+		if (intencao == 0){
+			return 1;
+		}
+	}
+	else{
+		return 3;
+	}
+	return 0;
 }

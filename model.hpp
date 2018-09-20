@@ -40,6 +40,7 @@ class Jogador{
     Posicao* get_posicao_atual();
     Posicao* get_posicao_antiga();
     char get_simbolo();
+    Posicao* set_posicao_atual(int x, int y);
 };
 class ListaDeJogadores{
   private:
@@ -54,15 +55,18 @@ class Mapa{
   private:
     int altura, largura;
     ListaDePosicoes *posicoes_iniciais, *posicoes_objetivo;
-    ListaDeJogadores *jogadores;
+    ListaDeJogadores *jogadores, *obstaculos;
     
   public:
-    Mapa(int altura, int largura, ListaDePosicoes *iniciais, ListaDePosicoes *objetivo, ListaDeJogadores *jogadores);
+    Mapa(int altura, int largura, ListaDePosicoes *iniciais, ListaDePosicoes *objetivo, ListaDeJogadores *jogadores, ListaDeJogadores *obstaculos);
     int get_altura();
     int get_largura();
     std::vector<Posicao*> *get_posicoes_iniciais();
     std::vector<Posicao*> *get_posicoes_objetivo();
     std::vector<Jogador*> *get_jogadores();
+    std::vector<Jogador*> *get_obstaculos();
+    int verificar_colisao(Jogador *j, int direcao);
+
 };
 
 #endif
