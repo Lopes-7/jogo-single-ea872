@@ -204,12 +204,30 @@ int Mapa::verificar_colisao_parede(Jogador *j, int direcao){
 int Mapa::verificar_colisao_obstaculo(Jogador *j){
 	std::vector<Jogador*> *obstaculos = this->get_obstaculos();
 	int i;
+	int x_jogador = j->get_posicao_atual()->get_x();
+	int y_jogador = j->get_posicao_atual()->get_y();
+	
 	for (i = 0; i < obstaculos->size();i++){
     	int x = (int) (*obstaculos)[i]->get_posicao_atual()->get_x();
     	int y = (int) (*obstaculos)[i]->get_posicao_atual()->get_y();
-    	if (x == j->get_posicao_atual()->get_x() && y == j->get_posicao_atual()->get_y()){
+    	if (x == x_jogador && y == y_jogador){
     		return 1;
     	}
 	}
 	return 0;	
+}
+
+int Mapa::verificar_vitoria(Jogador *j){
+	std::vector<Posicao*> *posicoes_objetivo = this->get_posicoes_objetivo();
+	int i;
+	int x_jogador = j->get_posicao_atual()->get_x();
+	int y_jogador = j->get_posicao_atual()->get_y();
+	for (i = 0; i < posicoes_objetivo->size();i++){
+    	int x = (int) (*posicoes_objetivo)[i]->get_x();
+    	int y = (int) (*posicoes_objetivo)[i]->get_y();
+    	if (x ==  x_jogador && y == y_jogador){
+    		return 1;
+    	}
+	}
+	return 0;
 }

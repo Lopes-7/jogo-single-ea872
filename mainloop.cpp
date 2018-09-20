@@ -11,20 +11,24 @@
 #define BAIXO 2
 #define CIMA 3
 
+#define NUMERO_DE_POSICOES_OBJETIVO 5
+#define NUMERO_DE_OBSTACULOS 10
 #define X_POSICAO_INICIAL 34
 #define Y_POSICAO_INICIAL 1
 
 int main(){
+	//debug
 	FILE *log;
 	log = fopen("log.txt","w+");
+	
+	int i;
 	//inicializando posicoes obj
 	ListaDePosicoes *po = new ListaDePosicoes();
-	Posicao *posicao_objetivo_0 = new Posicao(1, 50);
-	Posicao *posicao_objetivo_1 = new Posicao(1, 51);
-	Posicao *posicao_objetivo_2 = new Posicao(1, 52);
-	po->adicionar_posicao(posicao_objetivo_0);
-	po->adicionar_posicao(posicao_objetivo_1);
-	po->adicionar_posicao(posicao_objetivo_2);
+	Posicao *p;
+	for (i = 0; i < NUMERO_DE_POSICOES_OBJETIVO; i++){
+		p = new Posicao(1,135+i);
+		po->adicionar_posicao(p);
+	}
 
 	//inicializando posicoes ini
 	ListaDePosicoes *pi = new ListaDePosicoes();
@@ -40,21 +44,24 @@ int main(){
 	//criando obstaculos
 	//instanciando lista de obstaculos
 	ListaDeJogadores *lo = new ListaDeJogadores();
-	//criando posicoes dos obstaculos
-	Posicao *obstaculo_0 = new Posicao(25,25);
-	Posicao *obstaculo_antiga_0 = new Posicao(25,25);
-	Posicao *obstaculo_1 = new Posicao(30,30);
-	Posicao *obstaculo_antiga_1 = new Posicao(30,30);
-	Posicao *obstaculo_2 = new Posicao(20,20);
-	Posicao *obstaculo_antiga_2 = new Posicao(20,20);
-	//instanciando obstaculos
-	Jogador *o0 = new Jogador('%', obstaculo_0, obstaculo_antiga_0);
-	Jogador *o1 = new Jogador('%', obstaculo_1, obstaculo_antiga_1);
-	Jogador *o2 = new Jogador('%', obstaculo_2, obstaculo_antiga_2);
-	lo->adicionar_jogador(o0);
-	lo->adicionar_jogador(o1);
-	lo->adicionar_jogador(o2);
 	
+	Posicao *p_o, *p_oa;
+	Jogador *obstaculo;
+	for (i = 0; i < NUMERO_DE_OBSTACULOS; i++){
+		//gera um numero entre 1 e 30
+		int x = rand() % 33 + 1;
+		//gera um numero entre 1 e 139 
+		int y = rand() % 139 + 1;
+		if(x != X_POSICAO_INICIAL && y != Y_POSICAO_INICIAL){
+			//criando posicoes do obstaculo
+			p_o = new Posicao(x,y);
+			p_oa = new Posicao(x,y);
+			//instanciando obstaculo
+			obstaculo = new Jogador('%', p_o, p_oa);
+			//adicionando obstaculo na lista
+			lo->adicionar_jogador(obstaculo);	
+		}
+	}
 
 	Mapa *mapa1 = new Mapa(35,140,pi,po,lj,lo);
 	Tela *tela = new Tela(mapa1, 50, 50, 50, 50);
@@ -65,6 +72,7 @@ int main(){
 
   	double tempo_sistema = 0;
 	int numero_de_derrotas = 0;
+	int numero_de_vitorias = 0;
 	while(1){
 		int resultado;
 		char c = teclado->getchar();
@@ -81,6 +89,10 @@ int main(){
       				j1->set_posicao_atual(X_POSICAO_INICIAL,Y_POSICAO_INICIAL);
       				numero_de_derrotas++;
 				}
+				if (mapa1->verificar_vitoria(j1) == 1){
+					j1->set_posicao_atual(X_POSICAO_INICIAL,Y_POSICAO_INICIAL);
+      				numero_de_vitorias++;
+				}
 			}
     	}
     	else if (c == 's') {
@@ -89,6 +101,10 @@ int main(){
       			if (mapa1->verificar_colisao_obstaculo(j1) == 1){
       				j1->set_posicao_atual(X_POSICAO_INICIAL,Y_POSICAO_INICIAL);
       				numero_de_derrotas++;
+				}
+				if (mapa1->verificar_vitoria(j1) == 1){
+					j1->set_posicao_atual(X_POSICAO_INICIAL,Y_POSICAO_INICIAL);
+      				numero_de_vitorias++;
 				}
       		}	
     	}
@@ -99,6 +115,10 @@ int main(){
       				j1->set_posicao_atual(X_POSICAO_INICIAL,Y_POSICAO_INICIAL);
       				numero_de_derrotas++;
 				}
+				if (mapa1->verificar_vitoria(j1) == 1){
+					j1->set_posicao_atual(X_POSICAO_INICIAL,Y_POSICAO_INICIAL);
+      				numero_de_vitorias++;
+				}
     		}
     	}
     	else if (c == 'd'){
@@ -107,6 +127,10 @@ int main(){
     			if (mapa1->verificar_colisao_obstaculo(j1) == 1){
       				j1->set_posicao_atual(X_POSICAO_INICIAL,Y_POSICAO_INICIAL);
       				numero_de_derrotas++;
+				}
+				if (mapa1->verificar_vitoria(j1) == 1){
+					j1->set_posicao_atual(X_POSICAO_INICIAL,Y_POSICAO_INICIAL);
+      				numero_de_vitorias++;
 				}
     		}
     	}
@@ -119,6 +143,6 @@ int main(){
 	}
 	tela->stop();
 	teclado->stop();
-	printf("tempo: %.2f\nderrotas: %d\n", (tempo_sistema/30), numero_de_derrotas);
+	printf("tempo: %.2f\nderrotas: %d\nvitorias: %d\n", (tempo_sistema/30), numero_de_derrotas,numero_de_vitorias);
 	return 0;
 }

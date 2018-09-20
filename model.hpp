@@ -68,6 +68,7 @@ class Mapa{
     std::vector<Jogador*> *get_obstaculos();
     int verificar_colisao_parede(Jogador *j, int direcao);
     int verificar_colisao_obstaculo(Jogador *j);
+    int verificar_vitoria(Jogador *j);
 
 };
 
