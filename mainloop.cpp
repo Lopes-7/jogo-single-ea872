@@ -11,6 +11,9 @@
 #define BAIXO 2
 #define CIMA 3
 
+#define X_POSICAO_INICIAL 34
+#define Y_POSICAO_INICIAL 1
+
 int main(){
 	FILE *log;
 	log = fopen("log.txt","w+");
@@ -25,8 +28,8 @@ int main(){
 
 	//inicializando posicoes ini
 	ListaDePosicoes *pi = new ListaDePosicoes();
-	Posicao *posicao_inicial_0 = new Posicao(34, 1);
-	Posicao *posicao_antiga_0 = new Posicao(34, 1);
+	Posicao *posicao_inicial_0 = new Posicao(X_POSICAO_INICIAL, Y_POSICAO_INICIAL);
+	Posicao *posicao_antiga_0 = new Posicao(X_POSICAO_INICIAL, Y_POSICAO_INICIAL);
 	pi->adicionar_posicao(posicao_inicial_0);
 	
 	//criando jogadores
@@ -60,29 +63,51 @@ int main(){
 	Teclado *teclado = new Teclado();
   	teclado->init();
 
-  	long int tempo_sistema = 0;
-	
+  	double tempo_sistema = 0;
+	int numero_de_derrotas = 0;
 	while(1){
 		int resultado;
 		char c = teclado->getchar();
+		
+		//se a tecla detectada for o w o personagem quer ir para cima
 		if (c == 'w') {
-			if(mapa1->verificar_colisao(j1,CIMA) == 0){
+			//verifica se ha uma parede acima do personagem
+			if(mapa1->verificar_colisao_parede(j1,CIMA) == 0){
+      			//se nao houver parede move o personagem para cima
       			j1->andar(CIMA, log);
+      			//verifica se apos andar o personagem colidiu com um obstaculo
+      			//se sim, o personagem perde e sua posicao volta a ser a inicial
+      			if (mapa1->verificar_colisao_obstaculo(j1) == 1){
+      				j1->set_posicao_atual(X_POSICAO_INICIAL,Y_POSICAO_INICIAL);
+      				numero_de_derrotas++;
+				}
 			}
     	}
     	else if (c == 's') {
-    		if(mapa1->verificar_colisao(j1,BAIXO) == 0){
+    		if(mapa1->verificar_colisao_parede(j1,BAIXO) == 0){
       			j1->andar(BAIXO, log);
+      			if (mapa1->verificar_colisao_obstaculo(j1) == 1){
+      				j1->set_posicao_atual(X_POSICAO_INICIAL,Y_POSICAO_INICIAL);
+      				numero_de_derrotas++;
+				}
       		}	
     	}
     	else if (c == 'a'){
-    		if(mapa1->verificar_colisao(j1,ESQUERDA) == 0){
+    		if(mapa1->verificar_colisao_parede(j1,ESQUERDA) == 0){
     			j1->andar(ESQUERDA, log);
+    			if (mapa1->verificar_colisao_obstaculo(j1) == 1){
+      				j1->set_posicao_atual(X_POSICAO_INICIAL,Y_POSICAO_INICIAL);
+      				numero_de_derrotas++;
+				}
     		}
     	}
     	else if (c == 'd'){
-    		if(mapa1->verificar_colisao(j1,DIREITA) == 0){
+    		if(mapa1->verificar_colisao_parede(j1,DIREITA) == 0){
     			j1->andar(DIREITA, log);
+    			if (mapa1->verificar_colisao_obstaculo(j1) == 1){
+      				j1->set_posicao_atual(X_POSICAO_INICIAL,Y_POSICAO_INICIAL);
+      				numero_de_derrotas++;
+				}
     		}
     	}
     	else if (c == 'q') {
@@ -94,5 +119,6 @@ int main(){
 	}
 	tela->stop();
 	teclado->stop();
+	printf("tempo: %.2f\nderrotas: %d\n", (tempo_sistema/30), numero_de_derrotas);
 	return 0;
 }

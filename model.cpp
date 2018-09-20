@@ -119,8 +119,10 @@ char Jogador::get_simbolo(){
 	return this->simbolo;
 }
 Posicao* Jogador::set_posicao_atual(int x, int y){
-	this->get_posicao_atual()->set_x(x);
-	this->get_posicao_atual()->set_y(y);
+	
+	this->posicao_atual->set_x(x);
+	this->posicao_atual->set_y(y);
+	
 }
 
 ListaDeJogadores::ListaDeJogadores(){
@@ -164,18 +166,9 @@ std::vector<Jogador*> *Mapa::get_obstaculos() {
   return (this->obstaculos->get_jogadores());
 }
 //retorna 0 se nao houve colisao, 1 se houve colisao com obstaculo, 2 se houve colisao e morte, 3 parametro invalido 
-int Mapa::verificar_colisao(Jogador *j, int direcao){
-	int intencao, i;
+int Mapa::verificar_colisao_parede(Jogador *j, int direcao){
+	int intencao;
 	
-//ARRUMAR ESSA PARTE
-	/*std::vector<Jogador*> *obstaculos = this->get_obstaculos();
-	for (i = 0; i < obstaculos->size();i++){
-    	int x = (int) (*obstaculos)[i]->get_posicao_atual()->get_x();
-    	int y = (int) (*obstaculos)[i]->get_posicao_atual()->get_y();
-    	if (x == j->get_posicao_atual()->get_x() && y == j->get_posicao_atual()->get_y()){
-    		return 2;
-    	}
-	}*/
 	if (direcao == 0){
 		intencao = j->get_posicao_atual()->get_y() + 1;
 		if (intencao == get_largura()){
@@ -206,4 +199,17 @@ int Mapa::verificar_colisao(Jogador *j, int direcao){
 		return 3;
 	}
 	return 0;
+}
+
+int Mapa::verificar_colisao_obstaculo(Jogador *j){
+	std::vector<Jogador*> *obstaculos = this->get_obstaculos();
+	int i;
+	for (i = 0; i < obstaculos->size();i++){
+    	int x = (int) (*obstaculos)[i]->get_posicao_atual()->get_x();
+    	int y = (int) (*obstaculos)[i]->get_posicao_atual()->get_y();
+    	if (x == j->get_posicao_atual()->get_x() && y == j->get_posicao_atual()->get_y()){
+    		return 1;
+    	}
+	}
+	return 0;	
 }
