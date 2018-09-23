@@ -84,8 +84,9 @@ void thread_manipular_obstaculos(Mapa *m, int* control);
 class ManipuladorDeObstaculos{
   private:
     Mapa *m;
+    //variavel que ve se a thread esta ativa
     int rodando;
-
+    //varaivel para guardar a thread
     std::thread mo_thread;
 
   public:

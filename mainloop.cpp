@@ -12,14 +12,17 @@
 #define CIMA 3
 
 #define NUMERO_DE_POSICOES_OBJETIVO 5
-#define NUMERO_DE_OBSTACULOS 10
+#define NUMERO_DE_OBSTACULOS 120
 #define X_POSICAO_INICIAL 34
 #define Y_POSICAO_INICIAL 1
+#define Y_MAXIMO 35
+#define X_MAXIMO 140
+
 
 int main(){
 	
 	int i;
-	//inicializando posicoes obj
+	//inicializando posicoes objetivo
 	ListaDePosicoes *po = new ListaDePosicoes();
 	Posicao *p;
 	for (i = 0; i < NUMERO_DE_POSICOES_OBJETIVO; i++){
@@ -27,7 +30,7 @@ int main(){
 		po->adicionar_posicao(p);
 	}
 
-	//inicializando posicoes ini
+	//inicializando posicoes iniciais
 	ListaDePosicoes *pi = new ListaDePosicoes();
 	Posicao *posicao_inicial_0 = new Posicao(X_POSICAO_INICIAL, Y_POSICAO_INICIAL);
 	Posicao *posicao_antiga_0 = new Posicao(X_POSICAO_INICIAL, Y_POSICAO_INICIAL);
@@ -39,16 +42,15 @@ int main(){
 	lj->adicionar_jogador(j1);
 
 	//criando obstaculos
-	//instanciando lista de obstaculos
 	ListaDeJogadores *lo = new ListaDeJogadores();
 	
 	Posicao *p_o, *p_oa;
 	Jogador *obstaculo;
 	for (i = 0; i < NUMERO_DE_OBSTACULOS; i++){
-		//gera um numero entre 1 e 30
-		int x = rand() % 33 + 1;
+		//gera um numero entre os validos para colocar o obstaculo
+		int x = rand() % (Y_MAXIMO - 2) + 1;
 		//gera um numero entre 1 e 139 
-		int y = rand() % 139 + 1;
+		int y = rand() % (X_MAXIMO - 2) + 1;
 		if(x != X_POSICAO_INICIAL && y != Y_POSICAO_INICIAL){
 			//criando posicoes do obstaculo
 			p_o = new Posicao(x,y);
@@ -59,8 +61,9 @@ int main(){
 			lo->adicionar_jogador(obstaculo);	
 		}
 	}
-
-	Mapa *mapa1 = new Mapa(35,140,pi,po,lj,lo);
+	//instancia um objeto mapa e passa como parametros a lista de posicoes iniciais dos jogadores
+	//lista de posicoes objetivo, lista de jogadores e lista de obstaculos
+	Mapa *mapa1 = new Mapa(Y_MAXIMO,X_MAXIMO,pi,po,lj,lo);
 	Tela *tela = new Tela(mapa1, 50, 50, 50, 50);
 	tela->init();
 	tela->update();
@@ -156,6 +159,7 @@ int main(){
 		tempo_sistema++;
 	}
 
+	//finaliza todas as instancias
 	tela->stop();
 	teclado->stop();
 	manipulador->stop();

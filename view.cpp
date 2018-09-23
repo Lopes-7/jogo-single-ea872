@@ -16,9 +16,9 @@ Tela::Tela(Mapa *m, int maxI, int maxJ, float maxX, float maxY) {
 
 //inicializacao da tela
 void Tela::init() {
-  initscr();			       /* Start curses mode 		*/
-	raw();				         /* Line buffering disabled	*/
-  curs_set(0);           /* Do not display cursor */
+  initscr();			      
+	raw();				        
+  curs_set(0);         
 }
 
 //funcao que desenha na tela
