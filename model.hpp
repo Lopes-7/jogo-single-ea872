@@ -6,6 +6,7 @@
 #include <thread>
 #include <iostream>
 
+//classe para identificar a posicao de jogadores e obstaculos
 class Posicao{
   private:
     int x, y;
@@ -16,7 +17,7 @@ class Posicao{
     void set_x(int novo);
     void set_y(int novo);
 };
-
+//classe para agrupar posicoes
 class ListaDePosicoes{
   private:
     std::vector<Posicao*> *posicoes;
@@ -28,6 +29,7 @@ class ListaDePosicoes{
     void hard_copy(ListaDePosicoes *ldp);
 };
 
+//classe usada para identificar um jogador ou um obstaculo no mapa
 class Jogador{
   private:
     char simbolo;
@@ -36,13 +38,14 @@ class Jogador{
 
   public:
     Jogador(char simbolo, Posicao *posicao_atual, Posicao *posicao_antiga);
-    void andar(int direcao, FILE* log);
+    void andar(int direcao);
     Posicao* get_posicao_atual();
     Posicao* get_posicao_antiga();
     char get_simbolo();
     Posicao* set_posicao_atual(int x, int y);
 
 };
+//classe para agrupar jogadores e obstaculos
 class ListaDeJogadores{
   private:
     std::vector<Jogador*> *jogadores;
@@ -52,6 +55,8 @@ class ListaDeJogadores{
     void adicionar_jogador(Jogador *j);
     void remover_jogador(Jogador *j);  
 };
+
+//classe que contem uma lista de posicoes iniciais dos jogadores, posicoes objetivo e lista de jogadores e obstaculos
 class Mapa{
   private:
     int altura, largura;
@@ -69,7 +74,25 @@ class Mapa{
     int verificar_colisao_parede(Jogador *j, int direcao);
     int verificar_colisao_obstaculo(Jogador *j);
     int verificar_vitoria(Jogador *j);
+    void mover_obstaculos(int direcao);
 
 };
 
+//thread para mover os obstaculos
+void thread_manipular_obstaculos(Mapa *m, int* control);
+//classe para mover os obstaculos
+class ManipuladorDeObstaculos{
+  private:
+    Mapa *m;
+    int rodando;
+
+    std::thread mo_thread;
+
+  public:
+    ManipuladorDeObstaculos(Mapa *m);
+    ~ManipuladorDeObstaculos();
+    void init();
+    void stop();
+
+};
 #endif

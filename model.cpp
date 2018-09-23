@@ -5,6 +5,7 @@
 
 #include "model.hpp"
 
+//implementacao da classe Posicao
 Posicao::Posicao(int x, int y) {
 	this->x = x;
 	this->y = y;
@@ -22,7 +23,7 @@ void Posicao::set_y(int novo) {
 	this->y = novo;
 }
 
-
+//implementacao da classe ListaDePosicoes
 ListaDePosicoes::ListaDePosicoes(){
 	this->posicoes = new std::vector<Posicao *>(0);
 }
@@ -45,14 +46,15 @@ void ListaDePosicoes::hard_copy(ListaDePosicoes *ldp) {
   }
 }
 
+//implementacao da classe Jogador
 Jogador::Jogador(char simbolo, Posicao *posicao_atual, Posicao *posicao_antiga) {
 	this->simbolo = simbolo;
 	this->posicao_atual = posicao_atual;
 	this->posicao_antiga = posicao_antiga;
 
 }
-
-void Jogador::andar(int direcao, FILE *log){	
+//funcao que modifica a posicao atual do jogador ou obstaculo com base no parametro direcao
+void Jogador::andar(int direcao){	
 	int x, y;
 	if (direcao == 0){
 		//anda para frente;
@@ -105,9 +107,6 @@ void Jogador::andar(int direcao, FILE *log){
 	else {
 		return;
 	}
-	fprintf(log ,"At: x:%d y:%d\n", this->posicao_atual->get_x(),this->posicao_atual->get_y());
-	fprintf(log ,"An: x:%d y:%d\n", this->posicao_antiga->get_x(),this->posicao_antiga->get_y());
-	
 }
 Posicao* Jogador::get_posicao_atual(){
 	return this->posicao_atual;
@@ -119,12 +118,12 @@ char Jogador::get_simbolo(){
 	return this->simbolo;
 }
 Posicao* Jogador::set_posicao_atual(int x, int y){
-	
 	this->posicao_atual->set_x(x);
 	this->posicao_atual->set_y(y);
 	
 }
 
+//implementacao da classe ListaDeJogadores
 ListaDeJogadores::ListaDeJogadores(){
 	this->jogadores = new std::vector<Jogador *>(0);
 }
@@ -138,7 +137,7 @@ void ListaDeJogadores::remover_jogador(Jogador *j){
 //TO DO
 }
 
-
+//implementacao da classe mapa
 Mapa::Mapa(int altura, int largura, ListaDePosicoes *iniciais, ListaDePosicoes *objetivo, ListaDeJogadores *jogadores, ListaDeJogadores *obstaculos){
 	this->altura = altura;
 	this->largura = largura;
@@ -165,30 +164,32 @@ std::vector<Jogador*> *Mapa::get_jogadores() {
 std::vector<Jogador*> *Mapa::get_obstaculos() {
   return (this->obstaculos->get_jogadores());
 }
-//retorna 0 se nao houve colisao, 1 se houve colisao com obstaculo, 2 se houve colisao e morte, 3 parametro invalido 
+//funcao para verificar se houve uma colisao de um jogador com o limite do mapa
 int Mapa::verificar_colisao_parede(Jogador *j, int direcao){
 	int intencao;
 	
+	//verifica se o jogador quer andar para a direita
 	if (direcao == 0){
 		intencao = j->get_posicao_atual()->get_y() + 1;
 		if (intencao == get_largura()){
 			return 1;
 		}
 	}
+	//verifica se o jogador quer andar para a esquerda
 	else if (direcao == 1){
 		intencao = j->get_posicao_atual()->get_y() - 1;
 		if (intencao == 0){
 			return 1;
 		}
 	}
-	//verifica se o jogador quiser andar para baixo
+	//verifica se o jogador quer andar para baixo
 	else if (direcao == 2){
 		intencao = j->get_posicao_atual()->get_x() + 1;
 		if (intencao == get_altura()){
 			return 1;
 		}
 	}
-	//verifica se o jogador quiser andar para cima
+	//verifica se o jogador quer andar para cima
 	else if (direcao == 3){
 		intencao = j->get_posicao_atual()->get_x() - 1;
 		if (intencao == 0){
@@ -196,27 +197,35 @@ int Mapa::verificar_colisao_parede(Jogador *j, int direcao){
 		}
 	}
 	else{
+		//se o parametro informado nao for 0,1,2 ou 3 retorna 3 para indicar um erro
 		return 3;
 	}
+	//caso nao haja colisao retorna 0
 	return 0;
 }
 
+//funcao que verifica se houve colisao entre o jogador e um obstaculo
 int Mapa::verificar_colisao_obstaculo(Jogador *j){
 	std::vector<Jogador*> *obstaculos = this->get_obstaculos();
 	int i;
+	//pegando coordenadas da posicao atual do jogador
 	int x_jogador = j->get_posicao_atual()->get_x();
 	int y_jogador = j->get_posicao_atual()->get_y();
 	
+	//compara as coordenadas com todas as coordenadas dos obstaculos
 	for (i = 0; i < obstaculos->size();i++){
     	int x = (int) (*obstaculos)[i]->get_posicao_atual()->get_x();
     	int y = (int) (*obstaculos)[i]->get_posicao_atual()->get_y();
+    	//se as duas coordenadas forem iguais retorna 1 para indicar que houve uma colisao
     	if (x == x_jogador && y == y_jogador){
     		return 1;
     	}
 	}
+	//retorna 0 se nao houve colisao
 	return 0;	
 }
 
+//funcao que verifica se a posicao do jogador é igual a alguma posicao objetivo
 int Mapa::verificar_vitoria(Jogador *j){
 	std::vector<Posicao*> *posicoes_objetivo = this->get_posicoes_objetivo();
 	int i;
@@ -231,3 +240,42 @@ int Mapa::verificar_vitoria(Jogador *j){
 	}
 	return 0;
 }
+
+//funcao que move todos os obstaculos da lista de obstaculos a partir do parametro direcao
+void Mapa::mover_obstaculos(int direcao){
+	std::vector<Jogador*> *obstaculos = this->get_obstaculos();
+	int i;
+	
+	for (i = 0; i < obstaculos->size();i++){
+    	(*obstaculos)[i]->andar(direcao);
+	}
+}
+
+//thread responsavel por mover todos os obstaculos de um mapa recebido como parametro
+void thread_manipular_obstaculos(Mapa *m, int *control ){
+	int tempo = 0;
+	//se a thread estiver ativa:
+	while((*control) == 1){
+		//move obstaculos com um certo padrao de direcoes (0, 1, 2, 3)
+		m->mover_obstaculos(tempo % 4);
+		tempo++;
+		std::this_thread::sleep_for (std::chrono::milliseconds(1000));
+	}
+	return;
+}
+
+//implementacao da classe ManipuladorDeObstaculos
+ManipuladorDeObstaculos::ManipuladorDeObstaculos(Mapa *m){
+	this->m = m;
+}
+//funcao que inicializa a execucao da thread para mover os obstaculos
+void ManipuladorDeObstaculos::init(){
+	this->rodando = 1;
+	std::thread newthread(thread_manipular_obstaculos, this->m, &(this->rodando));
+  	(this->mo_thread).swap(newthread);
+}
+//funcao para parar a execucao da thread
+void ManipuladorDeObstaculos::stop(){
+	this->rodando = 0;
+}
+
