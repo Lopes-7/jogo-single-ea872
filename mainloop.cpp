@@ -20,6 +20,15 @@
 
 
 int main(){
+	//inicializando audio
+	Audio::Sample *som_derrota;
+  	som_derrota = new Audio::Sample();
+  	som_derrota->load("assets/blip.dat");
+  	Audio::Player *player;
+  	player = new Audio::Player();
+  	player->init();
+  	
+    player->play(som_derrota);
 	
 	int i;
 	//inicializando posicoes objetivo
@@ -85,6 +94,8 @@ int main(){
 		if (mapa1->verificar_colisao_obstaculo(j1) == 1){
       				j1->set_posicao_atual(X_POSICAO_INICIAL,Y_POSICAO_INICIAL);
       				numero_de_derrotas++;
+      				//toca
+      				som_derrota->set_position(0);
       	}
 
       	//le a entrada do teclado
@@ -94,12 +105,14 @@ int main(){
 			//verifica se ha uma parede acima do personagem
 			if(mapa1->verificar_colisao_parede(j1,CIMA) == 0){
       			//se nao houver parede move o personagem para cima
-      			j1->andar(CIMA);
+      			j1->andar(CIMA);     			
       			//verifica se apos andar o personagem colidiu com um obstaculo
       			//se sim, o personagem perde e sua posicao volta a ser a inicial
       			if (mapa1->verificar_colisao_obstaculo(j1) == 1){
       				j1->set_posicao_atual(X_POSICAO_INICIAL,Y_POSICAO_INICIAL);
       				numero_de_derrotas++;
+      				//toca
+      				som_derrota->set_position(0);
 				}
 				if (mapa1->verificar_vitoria(j1) == 1){
 					j1->set_posicao_atual(X_POSICAO_INICIAL,Y_POSICAO_INICIAL);
@@ -114,6 +127,8 @@ int main(){
       			if (mapa1->verificar_colisao_obstaculo(j1) == 1){
       				j1->set_posicao_atual(X_POSICAO_INICIAL,Y_POSICAO_INICIAL);
       				numero_de_derrotas++;
+      				//toca
+      				som_derrota->set_position(0);
 				}
 				if (mapa1->verificar_vitoria(j1) == 1){
 					j1->set_posicao_atual(X_POSICAO_INICIAL,Y_POSICAO_INICIAL);
@@ -128,6 +143,8 @@ int main(){
     			if (mapa1->verificar_colisao_obstaculo(j1) == 1){
       				j1->set_posicao_atual(X_POSICAO_INICIAL,Y_POSICAO_INICIAL);
       				numero_de_derrotas++;
+      				//toca
+      				som_derrota->set_position(0);
 				}
 				if (mapa1->verificar_vitoria(j1) == 1){
 					j1->set_posicao_atual(X_POSICAO_INICIAL,Y_POSICAO_INICIAL);
@@ -142,6 +159,8 @@ int main(){
     			if (mapa1->verificar_colisao_obstaculo(j1) == 1){
       				j1->set_posicao_atual(X_POSICAO_INICIAL,Y_POSICAO_INICIAL);
       				numero_de_derrotas++;
+      				//toca
+      				som_derrota->set_position(0);
 				}
 				if (mapa1->verificar_vitoria(j1) == 1){
 					j1->set_posicao_atual(X_POSICAO_INICIAL,Y_POSICAO_INICIAL);
